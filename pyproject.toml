@@ -1,13 +1,10 @@
-[tool.poetry]
+[project]
 name = "investigraph"
 version = "0.6.1"
 description = "etl pipeline for investigations with follow the money data"
-authors = ["Simon Wörpel <simon@investigativedata.org>"]
+authors = [{ name = "Simon Wörpel", email = "simon.woerpel@pm.me" }]
 license = "MIT"
 readme = "README.md"
-homepage = "https://investigraph.dev"
-repository = "https://github.com/investigativedata/investigraph-etl"
-documentation = "https://docs.investigraph.dev"
 classifiers = [
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
@@ -16,28 +13,25 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
 ]
-packages = [{ include = "investigraph" }]
+requires-python = ">=3.11,<4"
+dependencies = [
+    "anystore (>=0.2.2,<0.3.0)",
+    "ftmq (>=0.7.1,<0.8.0)",
+    "pydantic-settings (>=2.7.1,<3.0.0)",
+    "prefect (>=3.1.12,<4.0.0)",
+    "runpandarun (>=0.5.2,<0.6.0)",
+    "fakeredis (>=2.26.2,<3.0.0)",
+    "pantomime (>=0.6.1,<0.7.0)",
+]
 
-[tool.poetry.scripts]
+[project.scripts]
 investigraph = "investigraph.cli:cli"
 
-[tool.poetry.urls]
-"Bug Tracker" = "https://github.com/investigativedata/investigraph-etl/issues"
-
-[tool.poetry.dependencies]
-python = ">=3.11,<4"
-prefect = "^3.0.1"
-ftmq = "^0.6.14"
-anystore = "^0.1.11"
-runpandarun = "^0.5.1"
-cachelib = "^0.13.0"
-dateparser = "^1.2.0"
-html2text = "^2024.2.26"
-pandas = "^2.2.2"
-pantomime = "^0.6.1"
-fakeredis = "^2.24.1"
-prefect-dask = "^0.3.1"
-prefect-ray = "^0.4.2"
+[project.urls]
+Homepage = "https://investigraph.dev"
+Repository = "https://github.com/investigativedata/investigraph-etl"
+Documentation = "https://docs.investigraph.dev"
+Issues = "https://github.com/investigativedata/investigraph-etl/issues"
 
 [tool.poetry.group.dev.dependencies]
 pytest-env = ">=1.1.1"
