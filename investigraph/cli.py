@@ -4,7 +4,7 @@ from typing import Annotated, Optional
 
 import orjson
 import typer
-from anystore import smart_stream
+from anystore import smart_open, smart_stream
 from anystore.io import smart_write
 from ftmq.model import Catalog
 from rich import print
@@ -27,7 +27,7 @@ from investigraph.pipeline import run
 from investigraph.settings import SETTINGS, VERSION
 
 cli = typer.Typer(no_args_is_help=True)
-console = Console()
+console = Console(stderr=True)
 
 
 @cli.callback(invoke_without_command=True)
@@ -86,16 +86,23 @@ def cli_transform(
         typer.Option("-c", help="Any local or remote json or yaml uri"),
     ],
     in_uri: Annotated[str, typer.Option("-i")] = "-",
+    out_uri: Annotated[str, typer.Option("-o")] = "-",
 ):
     """
     Execute a dataset pipelines transform stage with records from in_uri
-    (default: stdin) and write proxies to stdout
+    (default: stdin) and write proxies to out_uri (default: stdout)
     """
     ctx = BaseContext.from_config(get_config(config))
-    for ix, record in enumerate(smart_stream(in_uri, mode="rb")):
-        for proxy in transform_record(ctx, orjson.loads(record), ix):
-            data = orjson.dumps(proxy.to_dict(), option=orjson.OPT_APPEND_NEWLINE)
-            smart_write("-", data)
+    with smart_open(out_uri, "wb") as fh:
+        for ix, record in enumerate(smart_stream(in_uri, mode="rb")):
+            try:
+                for proxy in transform_record(ctx, orjson.loads(record), ix):
+                    data = orjson.dumps(
+                        proxy.to_dict(), option=orjson.OPT_APPEND_NEWLINE
+                    )
+                    fh.write(data)
+            except Exception as e:
+                console.print(e)
 
 
 @cli.command("inspect")
