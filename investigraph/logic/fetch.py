@@ -8,7 +8,8 @@ from io import BytesIO
 
 import requests
 from anystore import anycache, get_store
-from anystore.settings import Settings
+
+# from anystore.settings import Settings
 from anystore.store import BaseStore
 from anystore.util import make_checksum, make_data_checksum
 
@@ -18,9 +19,9 @@ from investigraph.settings import SETTINGS
 
 
 def get_anystore() -> BaseStore:
-    settings = Settings()
-    settings.uri = SETTINGS.anystore_uri
-    return get_store(**settings.model_dump())
+    # settings = Settings()
+    # settings.uri = SETTINGS.anystore_uri
+    return get_store(SETTINGS.anystore_uri)
 
 
 STORE = get_anystore()
